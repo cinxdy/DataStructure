@@ -139,6 +139,8 @@ int main(int argc, char *argv[]) {
 	char algorithm_list[4][20] = {"Bubble", "Insertion", "Quicksort", "Selection"};
 	enum algorithm_enum { BUBBLE, INSERTION, QUICKSORT, SELECTION };
 	int  algorithm_chosen = SELECTION;  // default algorithm chosen
+	void (*sortFn)(int *,int);
+	sortFn = selectionSort;
 	DPRINT(cout << ">main...N=" << N << endl;)
 
 	// Use setvbuf() to prevent the output from buffered on console.
@@ -165,10 +167,10 @@ int main(int argc, char *argv[]) {
 			switch (GetChar("\tEnter b for bubble, i for insertion, s for selection, q for quick sort: ")) {
 
 			// your code here
-			case 'b': algorithm_chosen = BUBBLE;  break;
-			case 'i': algorithm_chosen = INSERTION;  break;
-			case 's': algorithm_chosen = SELECTION;  break;
-			case 'q': algorithm_chosen = QUICKSORT;  break;
+			case 'b': algorithm_chosen = BUBBLE; sortFn = bubbleSort; break;
+			case 'i': algorithm_chosen = INSERTION; sortFn = insertionSort; break;
+			case 's': algorithm_chosen = SELECTION; sortFn = selectionSort; break;
+			case 'q': algorithm_chosen = QUICKSORT; sortFn = quickSort; break;
 
 			default: { cout << "\tNo such an algorithm available. Try it again.\n"; break; }
 			}
@@ -220,12 +222,7 @@ int main(int argc, char *argv[]) {
 			start = clock();
 
 			//cout << "your code here\n";
-			switch(algorithm_chosen){
-				case BUBBLE : bubbleSort(list,N);
-				case INSERTION : insertionSort(list,N);
-				case SELECTION : selectionSort(list,N);
-				case QUICKSORT : quickSort(list,N);
-			}
+			sortFn(list,N);
 
 			randomized = 'N';
 			printList(list,N,max_print,per_line);
