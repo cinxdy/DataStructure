@@ -17,6 +17,12 @@
 	02/10/19: Created
 */
 
+/*
+On my honour, I pledge that I have neither received nor provided improper assistance
+in the completion of this assignment.
+signed : 신지영 Section:03 Student Number:21800409
+*/
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -25,6 +31,28 @@ using namespace std;
 int main(int argc, char *argv[]) {
   // Use setvbuf() to prevent the output from buffered on console.
   // setvbuf(stdout, NULL, _IONBF, 0);
+
+	  //if there are not any arguments;
+	  if(argc==1){
+	    string name;
+	    while(1){
+	      cout << "Enter a name: ";
+	      //if fail
+	      if(!getline(cin,name) || name.length()==0){
+	        cout << "Hello World!\n";
+	        break;
+	      }
+	      //if not fail
+	      else cout <<"Hello "+name+"!\n";
+	    }
+	  }
+	  //if there are at least one arguments.
+	  else{
+	    cout << "Hello";
+	  	for (int i = 1; i < argc; i++)
+	  		cout <<" "<<argv[i] ;
+	    cout << "!\n";
+	  }
 
 	for (int i = 0; i < argc; i++)
 		cout << argv[i] << "!\n";
