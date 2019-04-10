@@ -8,6 +8,14 @@
 * with the list and returns the first node of the list since the first
 * may be changed inside of the function.
 */
+//Compile : g++ listnodeDriver.cpp listnode.cpp -I../../include -L../../lib -lnowic_mac -o listnode
+
+/*
+On my honour, I pledge that I have neither received nor provided improper assistance
+in the completion of this assignment.
+signed : 신지영 Section:03 Student Number:21800409
+*/
+
 #include <iomanip>
 #include "listnode.h"
 
@@ -54,24 +62,31 @@ bool empty(pNode p) {
 pNode push_front(pNode p, int val) {
 	DPRINT(cout << "><push_front val=" << val << endl;);
 
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	p = new Node (val, p);
 
 	return p;
 }
 
-// adds a new node with val at the end of the list and returns the 
+// adds a new node with val at the end of the list and returns the
 // first node of the list. This effectively increases the list size by one.
 pNode push_back(pNode p, int val) {
 	DPRINT(cout << "><push_back val=" << val << endl;);
 
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	pNode plast = last(p);
+
+	//pback == nullptr
+	if (empty(p)) return push_front(plast,val);
+	//pback != nullptr
+	else plast->next = new Node (val, nullptr);
 
 	return p;
 }
 
 // inserts a new node with val at the position of the node with x.
 // The new node is actually inserted in front of the node with x.
-// It returns the first node of the list. 
+// It returns the first node of the list.
 // This effectively increases the container size by one.
 pNode push(pNode p, int val, int x) {
 	if (empty(p)) return push_front(p, val);
@@ -79,7 +94,18 @@ pNode push(pNode p, int val, int x) {
 
 	pNode curr = p;
 	pNode prev = nullptr;
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	while(curr->next != nullptr){
+		if(curr->item == x) break;
+		prev = curr;
+		curr = curr->next;
+	}
+
+	//if there is no x in nodelist
+	if(curr->item != x) return p;
+	pNode ppush = new Node(val,curr);
+	prev->next = ppush;
+
 	return p;
 }
 
@@ -104,11 +130,16 @@ pNode push_backN(pNode p, int N) {
 }
 
 // removes the first node in the list and returns the new first node.
-// This destroys the removed node, effectively reduces its size by one. 
+// This destroys the removed node, effectively reduces its size by one.
 pNode pop_front(pNode p) {
 	DPRINT(cout << ">pop_front size=" << size(p) << endl;);
 
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	//copy p
+	pNode pfirst = p;
+
+	p = p->next;
+	delete pfirst;
 
 	return p;
 }
@@ -118,42 +149,75 @@ pNode pop_front(pNode p) {
 pNode pop_back(pNode p) {
 	DPRINT(cout << ">pop_back size=" << size(p) << endl;);
 	if (empty(p)) return nullptr;
-	
-	cout << "your code here \n";
+
+	//cout << "your code here \n";
+	pNode prev=p,plast=p;
+	while (plast->next != nullptr) {
+		prev = plast;
+		plast = plast->next;
+	}
+
+	//plast == head
+	if(plast == p) return pop_front(p);
+	//plast != head
+	else{
+		prev->next = nullptr;
+		delete plast;
+	}
 
 	DPRINT(cout << "<pop_back size=" << size(p) << endl;);
 	return p;
 }
 
-// deletes N number of nodes, starting from the end. 
-// It deletes all the nodes if N is zero which is the default or out of 
+// deletes N number of nodes, starting from the end.
+// It deletes all the nodes if N is zero which is the default or out of
 // the range of the list.
 // Since it simply calls pop_back() which is O(n) repeatedly, it is O(N^2).
 pNode pop_backN(pNode p, int N) {
 	DPRINT(cout << ">pop_backN N=" << N << endl;);
-	
-	cout << "your code here \n";
+
+	//cout << "your code here \n";
+	for (int i = 0; i < N; i++) {
+		p = pop_back(p);
+	}
 
 	DPRINT(cout << "<pop_backN size=" << size(p) << endl);
 	return p;
 }
 
-// removes the first occurrence of the node with val from the list 
+// removes the first occurrence of the node with val from the list
 pNode pop(pNode p, int val) {
 	DPRINT(cout << ">pop val=" << val << endl;);
 	if (empty(p)) return nullptr;    // nothing to delete
 
 	if (p->item == val) return pop_front(p);
 
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	//find item
+	pNode pcurr = p, prev = nullptr;
+	while(pcurr->next != nullptr){
+		if(pcurr->item == val) break;
+		prev = pcurr;
+		pcurr = pcurr->next;
+	}
+	//if there is no finding val in nodelist
+	if(pcurr->item != val) return p;
+
+	//prm == last
+	if(pcurr == last(p)) return pop_back(p);
+	//prm == middle
+	else {
+		prev->next = pcurr->next;
+		delete pcurr;
+	}
 
 	DPRINT(cout << "<pop size=" << size(p) << endl;);
 	return p;
 }
 
-// shows the values of all the nodes in the list if all is true or 
-// the list size is less than pmax * 2. If there are more than 
-// (pmax * 2) nodes, then it shows only pmax number of nodes from 
+// shows the values of all the nodes in the list if all is true or
+// the list size is less than pmax * 2. If there are more than
+// (pmax * 2) nodes, then it shows only pmax number of nodes from
 // the beginning and the end in the list.
 void show(pNode p, bool all) {
 	DPRINT(cout << "show(" << size(p) << ")\n";);
@@ -175,13 +239,22 @@ void show(pNode p, bool all) {
 	}
 
 	// print the first pmax items
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	for (i = 0, curr = p; curr != nullptr; curr = curr->next, i++) {
+		if(i<pmax)
+			cout << " -> " << curr->item;
+	}
+	int length = i;
 
 	cout << "\n...left out...\n";
 	// print the last pmax items
 	// move the pointer to the place where pmax items are left.
 
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	for (i = 0, curr = p; curr != nullptr; curr = curr->next, i++) {
+		if(i>=length-pmax)
+			cout << " -> " << curr->item;
+	}
 
 	cout << "\n";
 }
