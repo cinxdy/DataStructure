@@ -13,7 +13,7 @@
 *    most of memeber functions defined in std::List.
 *
 *
-* 	Compilation: g++ listds.cpp listdsDriver.cpp listsort.cpp -o listds -I../../include -L../../lib -lnowic_mac -std=c++11
+* 	Compile : g++ listds.cpp listdsDriver.cpp listsort.cpp -o listds -I../../include -L../../lib -lnowic_mac -std=c++11
 *
 * On my honour, I pledge that I have neither received nor provided improper assistance
 * in the completion of this assignment.
