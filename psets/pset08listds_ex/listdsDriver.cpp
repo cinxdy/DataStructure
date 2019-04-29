@@ -22,7 +22,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
 	char c;
-	int val, x;
+	int val, x, N;
 	clock_t start = 0;
 	bool show_all = false;  // toggle the way of showing values 
 	pList p = new List;		// create an empty list with two sentinel nodes
@@ -68,6 +68,7 @@ int main(int argc, char **argv) {
 					cout << "\t Run sort first and try it again\n";
 					break;
 				}
+				start = clock();
 				push_sorted(p, val);
 				break;
 			}
@@ -75,6 +76,7 @@ int main(int argc, char **argv) {
 
 		case 'p':  // deletes the first node in the list
 			if (empty(p)) break;
+			start = clock();
 			pop_front(p);
 			break;
 		case 'y':  // deletes the last node in the list, O(n)
@@ -84,20 +86,25 @@ int main(int argc, char **argv) {
 		case 'd':  // deletes one node with the value
 			if (empty(p)) break;
 			val = GetInt("\tEnter a number to pop: ");
+			start = clock();
 			pop(p, val);
 			break;
 		case 'e':  // deletes all the nodes with the value given
 			if (empty(p)) break;
 			val = GetInt("\tEnter a number to pop all: ");
+			start = clock();
 			pop_all(p, val);
 			break;
 		case 's':  // sort
 			if (empty(p)) break;
-			start = clock();
-			if (sorted(p)) 
+
+			if (sorted(p)) {
+				start = clock();
 				reverse(p);
+			}
 			else {
 				char ch = GetChar("\tEnter b for bubble, q for quick, s for selection sort: ");
+				start = clock();
 				switch(ch) {
 				case 'b': bubbleSort(p); break;
 				case 'q': quickSort(p); break;
@@ -108,7 +115,7 @@ int main(int argc, char **argv) {
 		case 'u':  // unique
 			if (empty(p)) break;
 			if (!sorted(p)) {
-				cout << "\t*****sort first and try it again****\n";
+				cout << "\n\tsort first and try it again\n";
 				break;
 			}
 			start = clock();
@@ -138,42 +145,55 @@ int main(int argc, char **argv) {
 			break;
 
 		case 'S': // push_sortedN  O(n^2)
-			val = GetInt("\tEnter number of nodes to push sorted?: ");
+			if (!empty(p) && !sorted(p)) {
+				cout << "\n\tsort first and try it again\n";
+				break;
+			}
+			N = GetInt("\tEnter number of nodes to push sorted?: ");
 			start = clock();
-			push_sortedN(p, val);
+			push_sortedN(p, N);
 			break;
 
 		case 'Z': // push_sortedNlog  O(n log n)
-			val = GetInt("\tEnter number of nodes to push sorted?: ");
+			if (!empty(p) && !sorted(p)) {
+				cout << "\n\tsort first and try it again\n";
+				break;
+			}
+			N = GetInt("\tEnter number of nodes to push sorted?: ");
 			start = clock();
-			push_sortedNlog(p, val);
+			push_sortedNlog(p, N);
 			break;
 
 		case 'B':
-			val = GetInt("\tEnter number of nodes to push back?: ");
+			N = GetInt("\tEnter number of nodes to push back?: ");
+			val = GetInt("\tEnter a value to push back?(0 for random): ");
 			start = clock();
-			push_backN(p, val);
+			push_backN(p, N, val);
 			break;
 		case 'Y':
 			if (empty(p)) break;
-			val = GetInt("\tEnter number of nodes to pop back?: ");
+			N = GetInt("\tEnter number of nodes to pop back?: ");
 			start = clock();
-			pop_backN(p, val);
+			pop_backN(p, N);
 			break;
 		}
 
 		switch (c) {
 		case 'c':
+		case 'd':
+		case 'e':
+		case 'p':
+		case 'r':
 		case 's':
 		case 'u':
-		case 'r':
-		case 'S':
+		case 'x':
+		case 'z':
 		case 'B':
 		case 'Y':
+		case 'S':
 		case 'Z':
-			if (empty(p)) break;
 			cout << "\tcpu: "
-				 << ((clock_t) clock() - start) / CLOCKS_PER_SEC << " sec\n";
+				 << ((clock_t) clock() - start) / (double) CLOCKS_PER_SEC << " sec\n";
 		default:
 			break;
 		}
