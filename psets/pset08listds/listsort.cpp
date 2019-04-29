@@ -1,6 +1,11 @@
 // quicksort.cpp by idebtor@gmail.com
 // A typical recursive implementation of quick sort
 // 2018.12.15
+/*
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : 신지영 Section:03 Student Number:21800409
+*/
 
 #include <iostream>
 #include <cstdlib>
@@ -97,8 +102,23 @@ void bubbleSort2(pList p, int(*comp)(int, int)) {
 void selectionSort(pList p, int(*comp)(int, int)) {
 	DPRINT(cout << ">selectionSort N=" << size(p) << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step4-1: selectionSort()
+	if (sorted(p)) return reverse(p);
 
+	pNode tail = end(p);
+	pNode curr,min;
+	for (pNode i = begin(p); i != last(p); i = i->next) {
+		for (curr = i->next; curr->next != tail; curr = curr->next) {
+			if (comp(curr->item, curr->next->item) > 0) {
+				min = curr;
+			}
+		}
+		swap(min->item, min->next->item);
+
+		DPRINT(show(p, false););
+		tail = curr;
+	}
 	DPRINT(cout << "<selctionSort N=" << size(p) << endl;);
 }
 

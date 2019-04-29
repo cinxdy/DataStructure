@@ -11,6 +11,13 @@
 *    provide with benifits of coding consistency and easy maintenance.
 * 2. It does not implment C++ iterator (which is deprecated), but simulated
 *    most of memeber functions defined in std::List.
+*
+*
+* 	Compilation: g++ listds.cpp listdsDriver.cpp listsort.cpp -o listds -I../../include -L../../lib -lnowic_mac -std=c++11
+*
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : 신지영 Section:03 Student Number:21800409
 */
 
 #include <iostream>
@@ -45,10 +52,14 @@ pNode last(pList p) {
 // For even numbers, it returns the first node of the second half.
 // For example, for list [0, 1, 2, 3, 4, 5, 6, 7], it returns 4.
 pNode half(pList p) {
-
-	cout << "your code here. ";
-
-	return nullptr;
+	//cout << "your code here. ";
+	//Step2: half()
+	int N = size(p) / 2;
+	pNode node = begin(p);
+	for(int i = 0 ; i < N ; i++)
+		node = node->next;
+	DPRINT(cout<<"N="<<N<<" Half="<<node->item<<endl;);
+	return node;
 }
 
 // returns the first node with val found, the tail sentinel node 
@@ -152,7 +163,10 @@ void pop_back(pList p) {
 // the value given.
 void pop(pList p, int val) {
 	DPRINT(cout << ">pop val=" << val << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1: pop()
+	pNode node = find(p,val);
+	erase(p,node);
 
 	DPRINT(cout << "<pop\n";);
 }
@@ -164,7 +178,14 @@ void pop(pList p, int val) {
 // first node with the value given. 
 void pop_all(pList p, int val) {
 	DPRINT(cout << ">pop_all val=" << val << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1: pop_all()
+	for (pNode c = begin(p); c != end(p); c = c->next){
+		if (c->item == val){
+			erase(c);
+		}
+	}
+
 	DPRINT(cout << "<pop_all\n";);
 }
 
@@ -207,7 +228,11 @@ void push_back(pList p, int val) {
 // This effectively increases the container size by one.
 void push(pList p, int val, int x) {
 	DPRINT(cout << ">push val=" << val << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1: push()
+	pNode node = find(p,x);
+	insert(node,val);
+	
 	DPRINT(cout << "<push\n";);
 }
 
@@ -240,7 +265,12 @@ void unique(pList p) {
 	DPRINT(cout << ">unique N=" << size(p) << endl;);
 	if (size(p) <= 1) return;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step3: unique()
+	if (size(p) <= 1) return;
+	for (pNode c = begin(p); c != end(p); c = c->next)
+		if (c->item == c->prev->item) 
+			erase(c);
 
 	DPRINT(cout << "<unique";);
 }
@@ -257,8 +287,12 @@ void reverse(pList p) {
 	// then, swap head and tail.  
 	// hint: use while loop, don't use begin()/end()
 
-	cout << "your code here\n";
-	
+	//cout << "your code here\n";
+	//Step5: reverse()
+	pNode halfp = half(p);
+	for(pNode front = begin(p), back = last(p); front != halfp ; front = front->next,back = back->prev){
+		swap(front->item,back->item);
+	}
 	DPRINT(cout << "<reverse\n";);
 }
 
@@ -322,7 +356,11 @@ bool sorted(pList p, int(*comp)(int a, int b)) {
 	DPRINT(cout << ">sorted?\n";);
 	if (size(p) <= 1) return true;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step4-2: sorted()
+	for (pNode i = begin(p); i != last(p); i = i->next)
+		if(comp(i->item,i->next->item)<0)
+			return false;
 
 	DPRINT(cout << "<sorted: true\n";);
 	return true;
@@ -331,7 +369,14 @@ bool sorted(pList p, int(*comp)(int a, int b)) {
 // inserts a node with val in sorted in the "sorted" list. O(n)
 void push_sorted(pList p, int val) {
 	DPRINT(cout << "<push_sorted val=" << val << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step4-3: push_sorted()
+	bool upsorted = sorted(p,ascending);
+	pNode node;
+	if(upsorted) node = _more(p,val);
+	else node = _less(p,val);
+	insert(node,val);
+
 	DPRINT(cout << "<push_sorted\n";);
 }
 
@@ -350,7 +395,15 @@ void push_sortedN(pList p, int N) {
 	bool upsorted = sorted(p, ascending);
 	srand((unsigned)time(NULL));	// initialize random seed
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step4-3: push_sortedN()
+	for(int i = 0 ; i < N ;	i++){
+		int val = rand() % range;
+		pNode node;
+		if(upsorted) node = _more(p,val);
+		else node = _less(p,val);
+		insert(node,val);
+	}
 
 	DPRINT(cout << "<push_sortedN\n";);
 }
