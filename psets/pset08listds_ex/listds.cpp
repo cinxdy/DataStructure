@@ -239,16 +239,26 @@ void push(pList p, int val, int x) {
 // adds N number of new nodes at the end of the list, O(1)
 // Values of new nodes are randomly generated in the range of
 // [0..(N + size(p))].
-void push_backN(pList p, int N) {
+void push_backN(pList p, int N, int val) {
 	DPRINT(cout << ">push_backN N=" << N;);
-
 	int psize = size(p);
-	int range = N + psize;
-	srand((unsigned)time(NULL));
-	for (int i = 0; i < N; i++) {
-		int val = rand() % range;
-		push_back(p, val);
-		cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
+
+	if (val == 0) {
+		int range = N + psize;
+		srand((unsigned)time(NULL));
+		for (int i = 0; i < N; i++) {
+			int val = (rand() * RAND_MAX + rand()) % range;
+			push_back(p, val);
+			if (i % 10000 == 0)
+				cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
+		}
+	}
+	else {
+		for (int i = 0; i < N; i++) {
+			push_back(p, val);
+			if (i % 10000 == 0)
+				cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
+		}
 	}
 	cout << "\n";
 
