@@ -108,16 +108,16 @@ void selectionSort(pList p, int(*comp)(int, int)) {
 
 	pNode tail = end(p);
 	pNode curr,min;
-	for (pNode i = begin(p); i != last(p); i = i->next) {
-		for (curr = i->next; curr->next != tail; curr = curr->next) {
-			if (comp(curr->item, curr->next->item) > 0) {
+	for (pNode i = begin(p); i->next != tail; i = i->next) {
+		min = i;
+		for (curr = i->next; curr!= tail; curr = curr->next) {
+			if (comp(curr->item, min->item) < 0) {
 				min = curr;
 			}
 		}
-		swap(min->item, min->next->item);
+		swap(i->item, min->item);
 
 		DPRINT(show(p, false););
-		tail = curr;
 	}
 	DPRINT(cout << "<selctionSort N=" << size(p) << endl;);
 }

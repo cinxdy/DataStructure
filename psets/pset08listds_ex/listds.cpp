@@ -53,7 +53,8 @@ pNode half(pList p) {
 		node = node->next;
 
 	DPRINT(cout<<"N="<<N<<" Half="<<node->item<<endl;);
-	return nullptr;
+	return node;
+	//Step2 end
 }
 
 // returns the first node with val found, the tail sentinel node 
@@ -158,10 +159,10 @@ void pop_back(pList p) {
 void pop(pList p, int val) {
 	DPRINT(cout << ">pop val=" << val << endl;);
 	//cout << "your code here\n";
-	//Step1: pop()
+	//Step1-2: pop()
 	pNode node = find(p,val);
 	erase(p,node);
-	//Step1 end
+	//Step1-2 end
 
 	DPRINT(cout << "<pop\n";);
 }
@@ -174,16 +175,20 @@ void pop(pList p, int val) {
 void pop_all(pList p, int val) {
 	DPRINT(cout << ">pop_all val=" << val << endl;);
 	//cout << "your code here\n";
-	//Step1: pop_all()
+	//Step1-3: pop_all()
 #if 1
 	// O(n) 
+	pNode temp;
 	for (pNode c = begin(p); c != end(p); c = c->next) {
 		if (c->item == val){
+			temp = c->prev;
 			erase(c);
+			c = temp;
+			DPRINT(cout<<"C-ITEM:"<<c->item<<endl;);
 		}
 	}
 #endif
-	//Step1 end
+	//Step1-3 end
 
 #if 0
 	// O(n^2)
@@ -234,10 +239,10 @@ void push_back(pList p, int val) {
 void push(pList p, int val, int x) {
 	DPRINT(cout << ">push val=" << val << endl;);
 	//cout << "your code here\n";
-	//Step1: push()
+	//Step1-1: push()
 	pNode node = find(p,x);
 	insert(node,val);
-	//Step1 end
+	//Step1-1 end
 
 	DPRINT(cout << "<push\n";);
 }
@@ -254,7 +259,7 @@ void push_backN(pList p, int N, int val) {
 		int range = N + psize;
 		srand((unsigned)time(NULL));
 		for (int i = 0; i < N; i++) {
-			int val = (rand() * RAND_MAX + rand()) % range;
+			int val = rand() % range;
 			push_back(p, val);
 			if (i % 10000 == 0)
 				cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
@@ -284,10 +289,15 @@ void unique(pList p) {
 
 	//cout << "your code here\n";
 	//Step3: unique()
-	if (size(p) <= 1) return;
+	pNode temp;
 	for (pNode c = begin(p); c != end(p); c = c->next)
-		if (c->item == c->prev->item) 
+		if (c->item == c->prev->item){
+			temp = c->prev;
 			erase(c);
+			c = temp;
+			DPRINT(cout<<"C-ITEM:"<<c->item<<endl;);
+		}
+	//Step3 end
 
 	DPRINT(cout << "<unique";);
 }
@@ -350,9 +360,14 @@ int less(int a, int b) { return (b - a); }
 // the tail sentinel node which is returned by end(p) otherwise. 
 pNode _more(pList p, int x) {
 	pNode c = begin(p);
-	for (; c != end(p); c = c->next)
-		if (c->item > x) return c;
+	for (; c != end(p); c = c->next){
+		if (c->item > x) {
+		DPRINT(cout<<">_more"<<endl; cout<<"c->item : "<<c->item<<endl;);
+		return c;}
+
+	}
 	return c;
+	
 }
 
 // returns the node of which value is smaller than x found first, 
@@ -378,8 +393,9 @@ bool sorted(pList p, int(*comp)(int a, int b)) {
 	//cout << "your code here\n";
 	//Step4-2: sorted()
 	for (pNode i = begin(p); i != last(p); i = i->next)
-		if(comp(i->item,i->next->item)<0)
+		if(comp(i->item,i->next->item) > 0)
 			return false;
+	//Step4-2 end
 
 	DPRINT(cout << "<sorted: true\n";);
 	return true;
@@ -391,6 +407,7 @@ void push_sorted(pList p, int val) {
 	//cout << "your code here\n";
 	//Step4-3: push_sorted()
 	bool upsorted = sorted(p,ascending);
+	DPRINT(cout << "upsorted" <<upsorted;);
 	pNode node;
 	if(upsorted) node = _more(p,val);
 	else node = _less(p,val);
@@ -415,20 +432,20 @@ void push_sortedN(pList p, int N) {
 
 	srand((unsigned)time(NULL));	// initialize random seed
 #if 1
+	// O(n^2) implment your code here for O(n^2)
+	// Refer to push_sorted(), but don't invoke push_sorted().
+
 	//cout << "your code here\n";
 	//Step4-3: push_sortedN()
 	bool upsorted = sorted(p, ascending);
-	for(int i = 0 ; i < N ;	i++){
+	pNode node;
+	for (int i = 0; i < N; i++) {
 		int val = rand() % range;
-		pNode node;
 		if(upsorted) node = _more(p,val);
 		else node = _less(p,val);
 		insert(node,val);
 	}
-
-	// O(n^2) implment your code here for O(n^2)
-	// Refer to push_sorted(), but don't invoke push_sorted().
-
+	//Step4-3 end
 #endif
 
 #if 0
