@@ -11,6 +11,10 @@
 *    provide with benifits of coding consistency and easy maintenance.
 * 2. It does not implment C++ iterator (which is deprecated), but simulated
 *    most of memeber functions defined in std::List.
+*
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : 신지영 Section:03 Student Number:21800409
 */
 
 #include <iostream>
@@ -316,10 +320,24 @@ void reverse(pList p) {
 
 	//cout << "your code here\n";
 	//Step5: reverse()
-	pNode halfp = half(p);
-	for(pNode front = begin(p), back = last(p); front != halfp ; front = front->next,back = back->prev){
-		swap(front->item,back->item);
+	pNode node = p->head;
+	pNode temp;
+	while(node != nullptr){
+		DPRINT(cout << "node->item" <<node->item<<endl;);
+		
+		//swap next and prev
+		temp = node->next;
+		node->next = node->prev;
+		node->prev = temp;
+		
+		//next node
+		node = node->prev;
 	}
+	//swap head and tail
+	temp = p->head;
+	p->head = p->tail;
+	p->tail = temp;
+
 	//Step5 end
 	
 	DPRINT(cout << "<reverse\n";);
@@ -345,7 +363,27 @@ void shuffle(pList p) {
 	// interleave nodes in the "que" into "mid" in the list of p.
 	// start inserting 1st node in "que" at 2nd node in "mid".
 
-	cout << "your code here\n";
+	//Step6: shuffle()
+	//cout << "your code here\n";
+	pNode mid = half(p);
+	pNode que = begin(p);
+
+	mid->prev->next = nullptr;
+	mid->prev = p->head;
+	p->head->next = mid;
+	
+	while(que != nullptr){
+		pNode q_next = que->next;
+		pNode m_next = mid->next;
+
+		que->prev = mid;
+		que->next = mid->next;
+		mid->next = mid->next->prev = que;
+		
+		mid = m_next;
+		que = q_next;
+	}
+	//Step6 end
 
 	DPRINT(cout << "<shuffle\n";);
 }
@@ -495,7 +533,25 @@ void push_sortedNlog(pList p, int N) {
 	int range = N + psize;
 	int* vals = new int[N];
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step7:push_sortedNlog()
+	for (int i = 0; i < N; i++)
+		vals[i] = rand() % range;
+
+	quickSort(vals,N);
+	
+	pNode i = begin(p);
+	int j=0;
+	while(true){
+		if(i->item > vals[j] || i == end(p)) {
+			insert(i,vals[j]);
+			j++;
+		}
+		else i = i->next;
+
+		if(j>=N) break;
+	}
+	//Step7 end
 
 	delete[] vals;
 	DPRINT(cout << "<push_sortedNlog\n";);

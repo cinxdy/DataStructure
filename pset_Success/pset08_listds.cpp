@@ -12,9 +12,6 @@
 * 2. It does not implment C++ iterator (which is deprecated), but simulated
 *    most of memeber functions defined in std::List.
 *
-*
-* 	Compilation: g++ listds.cpp listdsDriver.cpp listsort.cpp -o listds -I../../include -L../../lib -lnowic_mac -std=c++11
-*
 * On my honour, I pledge that I have neither received nor provided improper assistance
 * in the completion of this assignment.
 * signed : 신지영 Section:03 Student Number:21800409
@@ -58,8 +55,10 @@ pNode half(pList p) {
 	pNode node = begin(p);
 	for(int i = 0 ; i < N ; i++)
 		node = node->next;
+
 	DPRINT(cout<<"N="<<N<<" Half="<<node->item<<endl;);
 	return node;
+	//Step2 end
 }
 
 // returns the first node with val found, the tail sentinel node 
@@ -164,9 +163,10 @@ void pop_back(pList p) {
 void pop(pList p, int val) {
 	DPRINT(cout << ">pop val=" << val << endl;);
 	//cout << "your code here\n";
-	//Step1: pop()
+	//Step1-2: pop()
 	pNode node = find(p,val);
 	erase(p,node);
+	//Step1-2 end
 
 	DPRINT(cout << "<pop\n";);
 }
@@ -179,13 +179,27 @@ void pop(pList p, int val) {
 void pop_all(pList p, int val) {
 	DPRINT(cout << ">pop_all val=" << val << endl;);
 	//cout << "your code here\n";
-	//Step1: pop_all()
-	for (pNode c = begin(p); c != end(p); c = c->next){
+	//Step1-3: pop_all()
+#if 1
+	// O(n) 
+	pNode temp;
+	for (pNode c = begin(p); c != end(p); c = c->next) {
 		if (c->item == val){
+			temp = c->prev;
 			erase(c);
+			c = temp;
+			DPRINT(cout<<"C-ITEM:"<<c->item<<endl;);
 		}
 	}
+#endif
+	//Step1-3 end
 
+#if 0
+	// O(n^2)
+	while (find(p, val) != end(p)) {
+		pop(p, val);
+	}
+#endif
 	DPRINT(cout << "<pop_all\n";);
 }
 
@@ -198,8 +212,8 @@ void pop_backN(pList p, int N) {
 	int psize = size(p);
 	if (N <= 0 || N > psize) N = psize;
 	for (int i = 0; i < N; i++) {
-		cout << setw(7) 
-			 << "\r\tdeleting in [" << psize - i - 1 << "]        ";
+		if (i % 10000 == 0)
+			cout << setw(7) << "\r\tdeleting in [" << psize - i - 1 << "]        ";
 		pop_back(p);
 	}
 	cout << "\n";
@@ -229,26 +243,38 @@ void push_back(pList p, int val) {
 void push(pList p, int val, int x) {
 	DPRINT(cout << ">push val=" << val << endl;);
 	//cout << "your code here\n";
-	//Step1: push()
+	//Step1-1: push()
 	pNode node = find(p,x);
 	insert(node,val);
-	
+	//Step1-1 end
+
 	DPRINT(cout << "<push\n";);
 }
 
-// adds N number of new nodes at the end of the list, O(1)
-// Values of new nodes are randomly generated in the range of
-// [0..(N + size(p))].
-void push_backN(pList p, int N) {
+// adds N number of new nodes at the end of the list. O(n)
+// if val == 0, the values for new nodes are randomly generated in the 
+// range of [0..(N + size(p))]. Otherwise, simply insert the same val 
+// for N times.
+void push_backN(pList p, int N, int val) {
 	DPRINT(cout << ">push_backN N=" << N;);
-
 	int psize = size(p);
-	int range = N + psize;
-	srand((unsigned)time(NULL));
-	for (int i = 0; i < N; i++) {
-		int val = rand() % range;
-		push_back(p, val);
-		cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
+
+	if (val == 0) {
+		int range = N + psize;
+		srand((unsigned)time(NULL));
+		for (int i = 0; i < N; i++) {
+			int val = rand() % range;
+			push_back(p, val);
+			if (i % 10000 == 0)
+				cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
+		}
+	}
+	else {
+		for (int i = 0; i < N; i++) {
+			push_back(p, val);
+			if (i % 10000 == 0)
+				cout << setw(7) << "\r\tinserting in [" << i + psize << "]=" << val << "        ";
+		}
 	}
 	cout << "\n";
 
@@ -267,10 +293,15 @@ void unique(pList p) {
 
 	//cout << "your code here\n";
 	//Step3: unique()
-	if (size(p) <= 1) return;
+	pNode temp;
 	for (pNode c = begin(p); c != end(p); c = c->next)
-		if (c->item == c->prev->item) 
+		if (c->item == c->prev->item){
+			temp = c->prev;
 			erase(c);
+			c = temp;
+			DPRINT(cout<<"C-ITEM:"<<c->item<<endl;);
+		}
+	//Step3 end
 
 	DPRINT(cout << "<unique";);
 }
@@ -289,17 +320,33 @@ void reverse(pList p) {
 
 	//cout << "your code here\n";
 	//Step5: reverse()
-	pNode halfp = half(p);
-	for(pNode front = begin(p), back = last(p); front != halfp ; front = front->next,back = back->prev){
-		swap(front->item,back->item);
+	pNode node = p->head;
+	pNode temp;
+	while(node != nullptr){
+		DPRINT(cout << "node->item" <<node->item<<endl;);
+		
+		//swap next and prev
+		temp = node->next;
+		node->next = node->prev;
+		node->prev = temp;
+		
+		//next node
+		node = node->prev;
 	}
+	//swap head and tail
+	temp = p->head;
+	p->head = p->tail;
+	p->tail = temp;
+
+	//Step5 end
+	
 	DPRINT(cout << "<reverse\n";);
 }
 
 // returns so called "perfectly shuffled" list. 
 // The first half and the second half are interleaved each other. 
 // The shuffled list begins with the second half of the original p.
-// For example, 1234567890 returns 617283940.
+// For example, 1234567890 returns 6172839405.
 void shuffle(pList p) {
 	DPRINT(cout << ">shuffle\n";);
 	if (size(p) <= 1) return;    // nothing to shuffle
@@ -316,7 +363,27 @@ void shuffle(pList p) {
 	// interleave nodes in the "que" into "mid" in the list of p.
 	// start inserting 1st node in "que" at 2nd node in "mid".
 
-	cout << "your code here\n";
+	//Step6: shuffle()
+	//cout << "your code here\n";
+	pNode mid = half(p);
+	pNode que = begin(p);
+
+	mid->prev->next = nullptr;
+	mid->prev = p->head;
+	p->head->next = mid;
+	
+	while(que != nullptr){
+		pNode q_next = que->next;
+		pNode m_next = mid->next;
+
+		que->prev = mid;
+		que->next = mid->next;
+		mid->next = mid->next->prev = que;
+		
+		mid = m_next;
+		que = q_next;
+	}
+	//Step6 end
 
 	DPRINT(cout << "<shuffle\n";);
 }
@@ -331,9 +398,14 @@ int less(int a, int b) { return (b - a); }
 // the tail sentinel node which is returned by end(p) otherwise. 
 pNode _more(pList p, int x) {
 	pNode c = begin(p);
-	for (; c != end(p); c = c->next)
-		if (c->item > x) return c;
+	for (; c != end(p); c = c->next){
+		if (c->item > x) {
+		DPRINT(cout<<">_more"<<endl; cout<<"c->item : "<<c->item<<endl;);
+		return c;}
+
+	}
 	return c;
+	
 }
 
 // returns the node of which value is smaller than x found first, 
@@ -359,8 +431,9 @@ bool sorted(pList p, int(*comp)(int a, int b)) {
 	//cout << "your code here\n";
 	//Step4-2: sorted()
 	for (pNode i = begin(p); i != last(p); i = i->next)
-		if(comp(i->item,i->next->item)<0)
+		if(comp(i->item,i->next->item) > 0)
 			return false;
+	//Step4-2 end
 
 	DPRINT(cout << "<sorted: true\n";);
 	return true;
@@ -372,10 +445,12 @@ void push_sorted(pList p, int val) {
 	//cout << "your code here\n";
 	//Step4-3: push_sorted()
 	bool upsorted = sorted(p,ascending);
+	DPRINT(cout << "upsorted" <<upsorted;);
 	pNode node;
 	if(upsorted) node = _more(p,val);
 	else node = _less(p,val);
 	insert(node,val);
+	//Step4-3 end
 
 	DPRINT(cout << "<push_sorted\n";);
 }
@@ -392,19 +467,39 @@ void push_sortedN(pList p, int N) {
 
 	int psize = size(p);
 	int range = N + psize;
-	bool upsorted = sorted(p, ascending);
+
 	srand((unsigned)time(NULL));	// initialize random seed
+#if 1
+	// O(n^2) implment your code here for O(n^2)
+	// Refer to push_sorted(), but don't invoke push_sorted().
 
 	//cout << "your code here\n";
 	//Step4-3: push_sortedN()
-	for(int i = 0 ; i < N ;	i++){
+	bool upsorted = sorted(p, ascending);
+	pNode node;
+	for (int i = 0; i < N; i++) {
 		int val = rand() % range;
-		pNode node;
 		if(upsorted) node = _more(p,val);
 		else node = _less(p,val);
 		insert(node,val);
 	}
+	//Step4-3 end
+#endif
 
+#if 0
+	// O(n^3) Don't implement somethig like this, but in O(n^2).
+	for (int i = 0; i < N; i++) {
+		int val = (rand() * RAND_MAX + rand()) % range;
+		if (sorted(p, ascending)) {
+			pNode node = _more(p, val);
+			insert(node, val);
+		}
+		else {
+			pNode node = _less(p, val);
+			insert(node, val);
+		}
+	}
+#endif
 	DPRINT(cout << "<push_sortedN\n";);
 }
 
@@ -415,7 +510,7 @@ void push_sortedN(pList p, int N) {
 // 2. Sort vals using quicksort() of which time complexity 
 //    is O(n log n), in ascending or descending depending on 
 //    the list. .
-// 3. Merge two lists. 
+// 3. Merge two lists. - This process is O(n).
 //    Compare two values from the list and vals one by one. 
 //    For example, if sorted ascending and vals is smaller, 
 //    insert the vals into the list and go for the next val.
@@ -438,7 +533,25 @@ void push_sortedNlog(pList p, int N) {
 	int range = N + psize;
 	int* vals = new int[N];
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step7:push_sortedNlog()
+	for (int i = 0; i < N; i++)
+		vals[i] = rand() % range;
+
+	quickSort(vals,N);
+	
+	pNode i = begin(p);
+	int j=0;
+	while(true){
+		if(i->item > vals[j] || i == end(p)) {
+			insert(i,vals[j]);
+			j++;
+		}
+		else i = i->next;
+
+		if(j>=N) break;
+	}
+	//Step7 end
 
 	delete[] vals;
 	DPRINT(cout << "<push_sortedNlog\n";);

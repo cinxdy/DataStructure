@@ -115,7 +115,8 @@ void selectionSort(pList p, int(*comp)(int, int)) {
 				min = curr;
 			}
 		}
-		swap(i->item, min->item);
+		if(i!=min)
+			swap(i->item, min->item);
 
 		DPRINT(show(p, false););
 	}
