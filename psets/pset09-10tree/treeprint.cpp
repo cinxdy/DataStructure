@@ -7,6 +7,7 @@
  *				http://web.archive.org/web/20071224095835/http://www.
  *				openasthra.com/wp-content/uploads/2007/12/binary_trees1.c
  * 2016/05/05	added the back slash problem in console using Hangul
+ * 2019/05/05	added treeprint_levelorder() - recursive version 
  * 
  * The original code was modified to hide pointer related 
  * information in the tree structure for easy programming.
@@ -42,10 +43,10 @@
 
 #include <iostream>
 #include <sstream>
-#include <cstring>
 #include <string>
 #include <cassert>
 #include "tree.h"
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////////
 //      printing tree in console
@@ -237,6 +238,17 @@ void print_level(ptree node, int x, int level) {
 	}
 }
 
+// Compute the max depth of a tree. It is the number of nodes along
+// the longest path from the root node down to the farthest leaf node.
+// height: 0 (undefined) for empty tree, 1 for root only tree
+int treeprint_height(tree node) {
+	if (node == nullptr) return 0;
+	int left = treeprint_height(node->left);
+	int right = treeprint_height(node->right);
+	DPRINT(cout << " height: left=" << left << " right=" << right << endl;);
+	return (left > right) ? 1 + left : 1 + right;
+}
+
 //prints ascii tree for given Tree structure
 void treeprint(tree t) {
 	DPRINT(std::cout << ">treeprint\n";);
@@ -263,4 +275,30 @@ void treeprint(tree t) {
 		printf("(This tree is taller than %d, and may be drawn incorrectly.)\n", MAX_HEIGHT);
 	free_ptree(proot);
 	DPRINT(std::cout << "<treeprint\n";);
+}
+
+
+// Given a binary tree, its nodes are printed in level-order.
+void treeprint_levelorder(tree root, int level) {
+	DPRINT(cout << ">treeprint_levelorder lv=" << level << endl;);
+	if (root == nullptr) return;
+	if (level == 1)
+		cout << root->key << " ";
+	else {
+		treeprint_levelorder(root->left, level - 1);
+		treeprint_levelorder(root->right, level - 1);
+	}
+	DPRINT(cout << "<treeprint_levelorder lv=" << level << endl;);
+}
+
+void treeprint_levelorder(tree root) {
+	DPRINT(cout << ">treeprint_levelorder";);
+	if (root == nullptr) return;
+	int h = treeprint_height(root);
+
+	for (int i = 1; i <= h; i++) {
+		treeprint_levelorder(root, i);
+		cout << endl;
+	}
+	DPRINT(cout << "<treeprint_levelorder \n";);
 }
