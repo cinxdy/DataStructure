@@ -30,6 +30,12 @@
 *   root = insert(root, 7); // a new node is added
 *   root = trim(root, 5); // if first node is removed,
 *                           // the new root is returned
+*
+* Compile : g++ tree.cpp treeDriver.cpp treeprint.cpp -I../../include -L../../lib -lnowic_mac -DDEBUG -o tree -std=c++11
+
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : 신지영 Section:03 Student Number:21800409
 */
 
 #include <iostream>
@@ -56,17 +62,37 @@ int height(tree node) {
 	if (empty(node)) return 0;
 	// compute the depth of each subree and return the larger one.
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-3. height()
+	DPRINT(cout << ">height node->key=" << node->key << endl;);
+	//좌우 모두 값이 없으면
+	if (node->left == nullptr && node->right == nullptr)
+		return 1;
+	//좌우 모두 값이 있으면 큰 쪽+1을 리턴
+	else if( node->left != nullptr && node->right != nullptr ){
+		int left = height(node->left);
+		int right = height(node->right);
+		return ( left > right ? left+1 : right+1 );
+	}
+	//한 쪽만 값이 있거나 두 쪽 다 없으면 있는 쪽+1을 리턴
+	else 
+		return ( node->left != nullptr? height(node->left)+1:height(node->right)+1 );
 
+	//Step1-3. End.
 	return 0;
 }
 
 // Computes the size of the binary tree dyamically by
 // traversing the nodes recursively.
 int size(tree node) {
-	if (node == nullptr) return 0;
+	if (empty(node)) return 0;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-2. size()
+	DPRINT(cout << ">size node->key=" << node->key << endl;);
+	return 1+size(node->left)+size(node->right);
+	DPRINT(cout << "<size" << endl;);
+	//Step1-2. End.
 	
 	return 1; 
 }
@@ -82,9 +108,17 @@ int value(tree t) {
 
 // frees all nodes while traversing the tree like postorder
 tree clear(tree t) {
-	if (t == nullptr) return nullptr;
+	if (empty(t)) return nullptr;
 	
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-1. clear()
+	DPRINT(cout << ">clear t->key=" << t->key << endl;);
+	if(t->left == nullptr && t->right == nullptr)
+		delete t;
+	clear(t->left);
+	clear(t->right);
+	DPRINT(cout << "<clear" << endl;);
+	//Step1-1. End.
 
 	return nullptr;
 }
@@ -93,9 +127,15 @@ tree clear(tree t) {
 // search a key in binary search tree(BST) recursively.
 bool contains(tree node, int key) {
 	if (empty(node)) return false;
-
-	cout << "your code here\n";
-
+	
+	//cout << "your code here\n";
+	//Step1-5. contains()
+	DPRINT(cout << ">contains node->key=" << node->key << endl;);
+	if(key == node->key) return true;
+	else if(key < node->key ) return contains(node->left,key);
+	else return contains(node->right,key);
+	//Step1-5. End.
+	
 	return true;
 }
 
@@ -203,12 +243,26 @@ tree pred(tree node) {
 // Given a binary search tree, return the min or max key in the tree.
 // Don't need to traverse the entire tree.
 tree maximum(tree node) {			// returns max node
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-4. maximum()
+	DPRINT(cout << ">maximum node->key=" << node->key << endl;);
+	if( node->right == nullptr ) 
+		return node;
+	else return maximum( node->right );
+	//Step1-4. End.
+
 	return nullptr;
 }
 
 tree minimum(tree node) {			// returns min node
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-4. minimum()
+	DPRINT(cout << ">minimum node->key=" << node->key << endl;);
+	if( node->left == nullptr ) 
+		return node;
+	else return minimum( node->left );
+	//Step1-4. End.
+
 	return nullptr;
 }
 
@@ -511,5 +565,3 @@ tree trimAVL(tree node, int key) {
 		cout << "<trimAVL key=" << key << " is done, now rebalance at " << node->key << endl;);
 	return rebalance(node);
 }
-
-
