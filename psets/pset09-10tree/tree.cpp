@@ -207,7 +207,10 @@ tree trim(tree root, int key) {
 	if (root == nullptr) return root;	 // base case
 	DPRINT(cout << ">trim: now we are at: " << root->key << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step2. trim()
+	
+	//Step2. End.
 
 	DPRINT(if (root != nullptr) cout << "<trim returns: key=" << root->key << endl;);
 	DPRINT(if (root == nullptr) cout << "<trim returns: nullptr)\n";);
@@ -270,7 +273,14 @@ tree minimum(tree node) {			// returns min node
 // back through the argument v which is passed by reference. 
 void inorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">inorder size=" << v.size() << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-5. inorder()
+	if(empty(node)) return ;
+	inorder(node->left,v);
+	v.push_back(node->key);
+	inorder(node->right,v);
+	//Step1-5. End.
+
 	DPRINT(cout << "<inorder key=" << node->key << endl;);
 }
 
@@ -278,7 +288,14 @@ void inorder(tree node, vector<int>& v) {
 // back through the argument v which is passed by reference. 
 void postorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">postorder size=" << v.size() << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-5. postorder()
+	if(empty(node)) return ;
+	postorder(node->left,v);
+	postorder(node->right,v);
+	v.push_back(node->key);
+	//Step1-5. End.
+	
 	DPRINT(cout << "<postorder key=" << node->key << endl;);
 }
 
@@ -286,7 +303,14 @@ void postorder(tree node, vector<int>& v) {
 // back through the argument v which is passed by reference. 
 void preorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">preorder size=" << v.size() << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-5. preorder()
+	if(empty(node)) return ;
+	v.push_back(node->key);
+	preorder(node->left,v);
+	preorder(node->right,v);
+	//Step1-5. End.
+
 	DPRINT(cout << "<preorder key=" << node->key << endl;);
 }
 
@@ -297,7 +321,20 @@ void levelorder(tree node, vector<int>& v) {
 	DPRINT(cout << ">levelorder";);
 	if (node == nullptr) return;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-7. levelorder()
+	queue<tree> q;
+	tree nodex;
+	q.push(node);
+	while (!q.empty()) {
+		nodex = q.front(); q.pop();
+		v.push_back(nodex->key);
+		if(nodex->left!=nullptr)
+			q.push(nodex->left);
+		if(nodex->right!=nullptr)
+			q.push(nodex->right);
+	}
+	//Step1-7. End
 
 	DPRINT(cout << "<levelorder size=" << v.size() << endl;);
 }
@@ -311,7 +348,18 @@ bool _isBST(tree x, int min, int max) {
 	if (x == nullptr) return true;
 	DPRINT(cout << ">_isBST key=" << x->key << "\t min=" << min << " max=" << max << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step1-8. _isBST()
+	int left,right;
+	if(x->left != nullptr) left = value(x->left);
+	else left = value(x) - 1;
+
+	if(x->right != nullptr) right = value(x->right);
+	else right = value(x) + 1;
+
+	if(left < value(x) && value(x) < right && min <= left && right <= max )
+		return _isBST(x->left,min,max) && _isBST(x->right,min,max);
+	//Step1-8. End.
 
 	DPRINT(cout << "<_isBST key=" << x->key << "\t min=" << min << " max=" << max << endl;);
 	return false;
