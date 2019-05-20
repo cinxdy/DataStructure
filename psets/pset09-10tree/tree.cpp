@@ -209,7 +209,20 @@ tree trim(tree root, int key) {
 
 	//cout << "your code here\n";
 	//Step2. trim()
-	
+	if(key < root->key)
+		return root->left = trim(root->left,key);
+	else if(key > root->key)
+		return root->right = trim(root->right,key);
+
+	tree renode;
+	if(root->left == nullptr && root->right == nullptr) //has no child
+		renode = nullptr;
+	else if(root->left != nullptr && root->right != nullptr) // has two children
+		renode = trim(root,succ(root)->key);
+	else //has only a child
+		renode = (root->left != nullptr? root->left : root->right);
+	delete root;
+	return renode;
 	//Step2. End.
 
 	DPRINT(if (root != nullptr) cout << "<trim returns: key=" << root->key << endl;);
