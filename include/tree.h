@@ -66,7 +66,8 @@ tree maximum(tree t);					// returns the right most leaf
 tree pred(tree t);						// returns max node in left subtree
 tree succ(tree t);						// returns min node in right subtree 
 
-void inorder(tree t, std::vector<int>& v);	 // traverses tree in inorder
+void inorder(tree t, std::vector<int>& v);	 // traverses tree in inorder & returns keys
+void inorder(tree t, std::vector<tree>& v);	 // traverses tree in inorder & returns nodes
 void postorder(tree t, std::vector<int>& v); // traverses tree in postorder 
 void preorder(tree t, std::vector<int>& v);	 // traverses tree in preorder 
 void levelorder(tree t, std::vector<int>& v);// traverses tree in level-order 
@@ -83,6 +84,8 @@ bool balanced(tree t);				// checks the balance factor
 int balanceFactor(tree t);			// height diff(left - right)
 tree growAVL(tree t, int key);		// inserts a node with key
 tree trimAVL(tree t, int key);		// deletes a node with key
+tree buildAVL(int* v, int n);		// builds AVL from an array of keys sorted
+tree buildAVL(tree* v, int n);		// builds AVL from an array of nodes sorted
 tree rebalance(tree t);				// rebalances at a node
 tree rebalanceTree(tree root);	    // rebalances a tree repeatedly
 
