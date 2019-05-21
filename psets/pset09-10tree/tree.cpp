@@ -212,25 +212,35 @@ tree trim(tree node, int key) {
 	else if (key > node->key) // node to trim is in right subtree.
 		node->right = trim(node->right, key);
 	else {  
+		//Step2. trim()
 		if (node->left && node->right) {
 			// get the successor: smallest in right subtree
 			// copy the successor's content to this node
 			// trim the successor recursively starting at root->right 
 			// root itself dose not change, but root->right may
+			tree temp = succ(node);
+			node->key = temp->key;
+			node->right = trim(node->right,temp->key);
 		}
 		else if (node->left) {
 			// delete root, pass back root->left 
-			cout << "your code here\n";
-
+			//cout << "your code here\n";
+			tree temp = node->left;
+			delete node;
+			return temp;
 		}
 		else if (node->right) {
 			// delete root, pass back root->right 
-			cout << "your code here\n";
+			//cout << "your code here\n";
+			tree temp = node->right;
+			delete node;
+			return temp;
 		}
 		else {
 			delete node;
 			return nullptr;
 		}
+		//Step2. End.
 	}
 
 	DPRINT(if (node != nullptr) cout << "<trim returns: key=" << node->key << endl;);
@@ -243,7 +253,49 @@ tree trimplus(tree node, int key) {
 	if (node == nullptr) return node;	 // base case
 	DPRINT(cout << ">trimplus: now we are at: " << node->key << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step3. trimplus()
+	if (key < node->key) // if node to trim is in left subtree.
+		node->left = trim(node->left, key);
+	else if (key > node->key) // node to trim is in right subtree.
+		node->right = trim(node->right, key);
+	else {  
+		if (node->left && node->right) {
+			// get the successor: smallest in right subtree
+			// copy the successor's content to this node
+			// trim the successor recursively starting at root->right 
+			// root itself dose not change, but root->right may
+			if(height(node->left)>height(node->right)){
+				tree temp = pred(node);
+				node->key = temp->key;
+				node->left = trim(node->left,temp->key);
+			}
+			else{
+				tree temp = succ(node);
+				node->key = temp->key;
+				node->right = trim(node->right,temp->key);
+			}
+		}
+		else if (node->left) {
+			// delete root, pass back root->left 
+			//cout << "your code here\n";
+			tree temp = node->left;
+			delete node;
+			return temp;
+		}
+		else if (node->right) {
+			// delete root, pass back root->right 
+			//cout << "your code here\n";
+			tree temp = node->right;
+			delete node;
+			return temp;
+		}
+		else {
+			delete node;
+			return nullptr;
+		}
+	}
+	//Step3. End.
 
 	DPRINT(if (node != nullptr) cout << "<trimplus returns: key=" << node->key << endl;);
 	DPRINT(if (node == nullptr) cout << "<trimplus returns: nullptr)\n";);
@@ -559,14 +611,19 @@ tree rotateRL(tree node) {
 tree rebalance(tree node) {
 	DPRINT(cout << ">rebalance at:" << node->key << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step5-2. rebalace()
+	
 
 #ifdef DEBUG
 	treeprint(node);
 	cout << " Need rebalancing at " << node->key << endl;
 #endif
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	
+	
+	//Step5-2. End.
 
 	DPRINT(cout << "<rebalance returning" << endl;);
 	return node;
@@ -594,7 +651,10 @@ tree rebalanceTree(tree node) {
 	DPRINT(cout << ">rebalanceTree " << endl;);
 	if (node == nullptr) return nullptr;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step6. rebalanceTree()
+
+	//Step6. End.
 
 	DPRINT(cout << "<rebalanceTree " << endl;);
 	return node;
@@ -605,7 +665,11 @@ tree growAVL(tree node, int key) {
 	DPRINT(cout << ">growAVL key=" << key << endl;);
 	if (node == nullptr) return new TreeNode(key);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	//Step5-1. growAVL()
+	grow(node,key);
+	rebalance(node);
+	//Step5-1. End.
 
 	return nullptr;
 }
