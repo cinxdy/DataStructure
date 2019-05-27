@@ -52,11 +52,17 @@ bool more(Key* a, int i, int j) {
 	return a[i] > a[j];
 }
 
+void swap(Key* a, int i,int j){
+	int temp = a[i];
+	a[i]=a[j];
+	a[j]=temp;
+}
+
 void swim(Key* a, int k, int N) {
 	DPRINT(cout << ">swim key=" << a[k] << " @ k=" << k << " N=" << N << endl;);
 	int k_saved = k;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
 
 	cout << "   N=" << N << " k=" << k_saved << " ";
 	for (int i = 1; i <= N; i++) cout << a[i] << " ";
@@ -67,7 +73,14 @@ void sink(Key * a, int k, int N) {
 	DPRINT(cout << ">sink key=" << a[k] << " @ k=" << k << " N=" << N << endl;);
 	int k_saved = k;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	while(2*k <= N){
+		int j= 2 * k;
+		if(j < N && ::less(a, j,j+1)) j++;
+		if(!::less(a,k,j)) break;
+		swap(a,k,j);
+		k=j;
+	}
 
 	cout << "   N=" << N << " k=" << k_saved << " ";
 	for (int i = 1; i <= N; i++) cout << a[i] << " ";
@@ -80,7 +93,12 @@ void heapsort(Key * a, int N) {
 	// start 'sink' at the last internal node and go up.
 	cout << "1st pass(heapify - O(n)) begins:\n";
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	k=N/2;
+	while(k > 0){
+		sink(a,k,N);
+		k--;
+	}
 
 	cout << "HeapOrdered: ";
 
@@ -91,12 +109,18 @@ void heapsort(Key * a, int N) {
 	// repeat 'swap and sink' at the root while decrementing N.
 	cout << "2nd pass(swap and sink - n * O(log n) begins:\n";
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	while(N > 1){
+		swap(a,1,N);
+		N--;
+		sink(a,1,N);
+	}
 }
 
 int grow(Key * a, Key key, int N) {
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	
 
 	return N;
 }
