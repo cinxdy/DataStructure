@@ -615,6 +615,7 @@ tree rebalance(tree node) {
 	//Step5-3. rebalance()
 	int bf = balanceFactor(node);
 	
+	
 #ifdef DEBUG
 	treeprint(node);
 	cout << " Need rebalancing at " << node->key << endl;
@@ -622,13 +623,15 @@ tree rebalance(tree node) {
 
 	//cout << "your code here\n";
 	if(bf > 1) {
-		if(bf > 2)
+		int bfc = balanceFactor(node->left);
+		if(bfc > 1)
 			node = rotateLL(node);
 		else
 			node = rotateLR(node);
 	}
 	else if(bf < -1){
-		if(bf<-2)
+		int bfc = balanceFactor(node->right);
+		if(bfc < -1)
 			node = rotateRR(node);
 		else
 			node = rotateRL(node);
@@ -663,27 +666,58 @@ tree rebalanceTree(tree node) {
 
 	//cout << "your code here\n";
 	//Step6. rebalanceTree()
-	node = rebalance(node);
-	node->left = rebalanceTree(node->left);
-	node->right = rebalanceTree(node->right);
+	vector<int> v;
+	inorder(node,v);
+	tree new_root = buildAVL(v.data(),v.size());
+	node = clear(node);
+	node = new_root;
+
 	//Step6. End.
 
 	DPRINT(cout << "<rebalanceTree " << endl;);
 	return node;
 }
 
+//Step6. buildAVL()
+tree buildAVL(int* v, int n){
+	if(n <= 0) return nullptr;
+	DPRINT(cout << ">buildAVL n=" << n << endl;);
+	DPRINT(cout << ">v[begin] " << v[0] << endl;);
+	DPRINT(cout << ">v[end] " << v[n-1] << endl;);
+	// contsruct and set a TreeNode and initial values, use the [mid] element of v.
+	int mid = n/2;
+	tree node = new TreeNode(v[mid]);
+		
+	// your  code here - recursive buildAVL() calls for left & right
+		// from 0 to mid-1 (or mid number of nodes)
+		node->left = buildAVL(v, mid);
+
+		// from mid+1 to the end (how many nodes?)
+		int right[n-mid-1];
+		for(int i=0;i<n-mid-1;i++)
+			right[i] = v[mid+i+1];
+		node->right = buildAVL(right,n-mid-1);
+
+	return node;
+}
+//Step6. End.
+
 // inserts a node in the AVL tree and rebalance it. O(log n)
 tree growAVL(tree node, int key) {
 	DPRINT(cout << ">growAVL key=" << key << endl;);
 	if (node == nullptr) return new TreeNode(key);
 
-	//cout << "your code here\n";
-	//Step5-1. growAVL()
-	grow(node,key);
-	rebalance(node);
+	if (key < node->key){	// recur down the tree
+		node->left = grow(node->left, key);
+		rebalance(node);
+	}
+	else if (key > node->key){
+		node->right = grow(node->right, key);
+		rebalance(node);
+	}
 	//Step5-1. End.
 
-	return nullptr;
+	return node;
 }
 
 // removes a node with key in the AVL tree and rebalance it.
@@ -699,7 +733,7 @@ tree trimAVL(tree node, int key) {
 	// step 2 - get the balance factor of this node
 	int bf = balanceFactor(node);
 	if(bf>1 || bf<-1)
-		node = rebalanceTree(node);
+		node = rebalance(node);
 	return node;
 	//Step5-2. End.
 
