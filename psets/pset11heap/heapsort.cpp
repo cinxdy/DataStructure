@@ -63,7 +63,6 @@ void swim(Key* a, int k, int N) {
 	int k_saved = k;
 
 	//cout << "your code here\n";
-
 	cout << "   N=" << N << " k=" << k_saved << " ";
 	for (int i = 1; i <= N; i++) cout << a[i] << " ";
 	cout << endl;
@@ -120,8 +119,10 @@ void heapsort(Key * a, int N) {
 int grow(Key * a, Key key, int N) {
 
 	//cout << "your code here\n";
-	
-
+	for(int i=0;i<N;i++){
+		
+	}
+	a[N-1] = key;
 	return N;
 }
 
