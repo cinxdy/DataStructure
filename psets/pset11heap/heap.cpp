@@ -31,6 +31,9 @@
 *  2016/11/15	command-line arguments available for initial heap
 *  2016/11/18   minheap and maxheap conversion capability
 *  2019/04/11   C++ conversion
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : 신지영 Section:03 Student Number:21800409
 */
 
 #include <iostream>
@@ -69,18 +72,22 @@ int height(heap p) {
 }
 
 int minimum(heap p) {
+	if(empty(p)) return 0;
+
 	int key = p->nodes[1];
-	for (int i = 2; i <= p->N; i++) {
+	for (int i = 1; i <= p->N; i++) {
 		if (key > p->nodes[i]) key = p->nodes[i];
 	}
 	return key;
 }
 
 int maximum(heap p) {
+	if(empty(p)) return 0;
+
 	int key = p->nodes[1];
 	// if (heapOrdered(p)) return key;
 
-	for (int i = 2; i <= p->N; i++) {
+	for (int i = 1; i <= p->N; i++) {
 		if (key < p->nodes[i]) key = p->nodes[i];
 	}
 	return key;
@@ -102,7 +109,9 @@ void reserve(heap p, int capa) {
 void grow(heap p, int key) {
 	DPRINT(cout << ">grow key=" << key << endl;);
 	
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	growCBT(p,key);
+	swim(p,key);
 
 	DPRINT(cout << "<grow N=" << p->N << endl;);
 	return;
@@ -113,7 +122,11 @@ void trim(heap p) {
 	if (empty(p)) return;
 	DPRINT(cout << ">trim\n";);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	for(int i=1 ; i < p->N - 1 ; i++){
+		p->nodes[i] = p->nodes[i+1];
+	}
+	trimCBT(p);
 
 	DPRINT(cout << "<trim N=" << p->N << endl;);
 }
@@ -123,7 +136,10 @@ void trim(heap p) {
 int contains(heap p, int key) {
 	if (empty(p)) return 0;
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	for(int i=1 ; i < p->N ; i++){
+		if(p->nodes[i]==key) return 1;
+	}
 
 	return 0;
 }
@@ -173,16 +189,29 @@ void swap(heap p, int i, int j) {
 
 void swim(heap p, int k) {
 	DPRINT(cout << " swim key=" << p->nodes[k] << " k=" << k << " N=" << p->N << endl;);
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	while(k / 2 > 0){
+		int j = k / 2;
+		if(!p->comp(p,k,j)) break;
+		swap(p,k,j);
+		k = j;
+	}
 }
 
 void sink(heap p, int k) {
 	DPRINT(cout << " sink key=" << p->nodes[k] << " k=" << k << " N=" << p->N << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	while(2*k <= p->N){
+		int j= 2 * k;
+		if(j < p->N && p->comp(p, j,j+1)) j++;
+		if(!p->comp(p,k,j)) break;
+		swap(p,k,j);
+		k=j;
+	}
 
 #ifdef DEBUG
-	cout << "\tafter sink N=" << p->N << " k=" << endl;
+	cout << "\tafter sink N=" << p->N << " k=" << k << endl;
 	for (k = 1; k <= p->N; k++)
 		cout << p->nodes[k] << " ";
 	cout << endl;
@@ -195,13 +224,12 @@ void sink(heap p, int k) {
 
 // is this[1..N] max-heap ordered at a node k? 
 bool heapOrderedAt(heap p, int k) {
-	if (k > p->N/2) return true; // check it upto the last internal node.
+	if (2*k > p->N || 2*k+1 > p->N) return true; // check it upto the last internal node.
 
 	int left  = 2 * k;
 	int right = 2 * k + 1;
 
-	if ((left  <= p->N) && p->comp(p, k, left))  return false;
-	if ((right <= p->N) && p->comp(p, k, right)) return false;
+	if (p->comp(p, k, left) || p->comp(p, k, right))  return false;
 
 	return heapOrderedAt(p, left) && heapOrderedAt(p, right);
 }
@@ -218,7 +246,22 @@ bool heapOrdered(heap p) {
 void heapsort(heap p) {
 	DPRINT(cout << ">heapsort N=" << p->N << endl;);
 
-	cout << "your code here\n";
+	heapify(p);
+
+	int i = p->N;
+	while(i > 1){
+		swap(p,1,i);
+		i--;
+		
+		int k = 1;
+		while(2 * k <= i){
+			int j= 2 * k;
+			if(j < i && p->comp(p, j,j+1)) j++;
+			if(!p->comp(p,k,j)) break;
+			swap(p,k,j);
+			k=j;
+		}
+	}
 
 	std::cout << "\n\tSorted: ";
 	for (int i = 1; i <= p->N; i++)
@@ -246,7 +289,10 @@ heap newCBT(int *a, int n) {
 void growCBT(heap p, int key) {
 	DPRINT(cout << ">growCBT key=" << key << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	p->N++;
+	if(p->N == p->capacity){ reserve(p,p->capacity *2);}
+	p->nodes[p->N]= key;
 
 	DPRINT(cout << "<growCBT N=" << p->N << endl;);
 }
@@ -256,7 +302,10 @@ void growCBT(heap p, int key) {
 void trimCBT(heap p) {
 	DPRINT(cout << ">trimCBT " << endl;);
 	
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	p->nodes[p->N] = '\0';
+	p->N--;
+	if(p->N-- <= p->capacity *1/4){ reserve(p,p->capacity /2);}
 
 	DPRINT(cout << "<trimCBT N=" << p->N << endl;);
 }
@@ -269,7 +318,12 @@ void heapify(heap p) {
 	// since leaf nodes already satisfy the max/min priority property
 	// This is O(n) algorithm
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	int k=p->N/2;
+	while(k > 0){
+		sink(p,k);
+		k--;
+	}
 
 	DPRINT(cout << "<heapify" << endl;);
 }
@@ -305,8 +359,14 @@ void growN(heap p, int count, bool heapOrdered) {
 	int max = empty(p) ? 0 : maximum(p) + 1;
 	void(*insertFunc)(heap h, int key) = heapOrdered ? grow : growCBT;
 
-	cout << "your code here\n";
-
+	//cout << "your code here\n";
+	int* keys = new int[count]();
+	randomN(max,count,keys);
+	for(int i=0;i<count;i++){
+		insertFunc(p,keys[i]);
+	}
+	DPRINT(heapprint(p););
+	delete[] keys;
 	DPRINT(cout << "<growN" << endl;);
 }
 
@@ -318,7 +378,13 @@ void growN(heap p, int count, bool heapOrdered) {
 void trimN(heap p, int count, bool heapOrdered) {
 	DPRINT(cout << ">trimN" << endl;);
 
-	cout << "your code here\n";
+	//cout << "your code here\n";
+	if(count > p->N) count = p->N;
+	void(*deleteFunc)(heap h) = heapOrdered ? trim: trimCBT;
+	for(int i=0 ; i < count; i++){
+		deleteFunc(p);
+	}
 
+	DPRINT(heapprint(p););
 	DPRINT(cout << "<trimN" << endl;);
 }

@@ -29,6 +29,9 @@ Heap ordered: X T S P L R A M O E E
 * Author: Youngsup Kim, idebtor@gmail.com
 * 2014/04/30	YSK	Creation
 * 2019/05/15	C++ conversion
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : 신지영 Section:03 Student Number:21800409
 */
 
 #include <iostream>
@@ -63,6 +66,13 @@ void swim(Key* a, int k, int N) {
 	int k_saved = k;
 
 	//cout << "your code here\n";
+	while(k / 2 > 0){
+		int j = k / 2;
+		if(!::less(a,k,j)) break;
+		swap(a,k,j);
+		k = j;
+	}
+
 	cout << "   N=" << N << " k=" << k_saved << " ";
 	for (int i = 1; i <= N; i++) cout << a[i] << " ";
 	cout << endl;
@@ -75,8 +85,8 @@ void sink(Key * a, int k, int N) {
 	//cout << "your code here\n";
 	while(2*k <= N){
 		int j= 2 * k;
-		if(j < N && ::less(a, j,j+1)) j++;
-		if(!::less(a,k,j)) break;
+		if(j < N && ::comp(a, j,j+1)) j++;
+		if(!::comp(a,k,j)) break;
 		swap(a,k,j);
 		k=j;
 	}
@@ -119,10 +129,9 @@ void heapsort(Key * a, int N) {
 int grow(Key * a, Key key, int N) {
 
 	//cout << "your code here\n";
-	for(int i=0;i<N;i++){
-		
-	}
-	a[N-1] = key;
+	N++;
+	a[N] = key;
+	swim(a,N,N);
 	return N;
 }
 

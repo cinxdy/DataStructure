@@ -14,13 +14,16 @@
 * 3. Loop until the queue is empty
 *    Get a next key from the CBT
 *    Get the front node in the queue.
-*    If the left child of this front node doesn°Øt exist,
+*    If the left child of this front node doesnÔøΩÔøΩt exist,
 *        set the left child as the new node.
-*	 else if the right child of this front node doesn°Øt exist,
+*	 else if the right child of this front node doesnÔøΩÔøΩt exist,
 *        set the right child as the new node.
 * 4. If the front node has both the left child and right child,
 *        dequeue() it.
 * 5. enqueue() the new node.
+* On my honour, I pledge that I have neither received nor provided improper assistance
+* in the completion of this assignment.
+* signed : Ïã†ÏßÄÏòÅ Section:03 Student Number:21800409
 */
 
 #include <iostream>
@@ -28,6 +31,7 @@
 #include <queue>
 #include "heap.h"
 #include "treenode.h"
+#include <cmath>
 
 void treeprint(tree t);
 
@@ -35,9 +39,24 @@ void heapprint(heap p) {
 	DPRINT(std::cout << ">heapprint\n";);
 	if (empty(p)) return;
 
-	std::cout << "your code here\n";
+	//std::cout << "your code here\n";
+	tree root = new TreeNode(p->nodes[1]);
+	std::queue<tree> q;
+	q.push(root);
 
-	// treeprint(root);
+	int i=2;
+	while(i<=p->N){
+		int key = p->nodes[i];
+		tree node = new TreeNode(key);
+		tree temp = q.front();
+		if(temp->left==nullptr) temp->left = node;
+		else if(temp->right==nullptr) temp->right = node;
+		if(temp->left!=nullptr && temp->right!=nullptr) q.pop();
+		q.push(node);
+		i++;
+	}
+	
+	treeprint(root);
 
 	// treeprint_levelorder(root);  // may use this instead of heapprint_levelorder()
 	DPRINT(std::cout << "<heapprint\n";);
