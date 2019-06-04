@@ -7,7 +7,7 @@
 *.DS_Store
 
 #Visual Studio files
-*.[Oo]bj
+#*.[Oo]bj
 #*.exe
 *.pdb
 *.user
@@ -43,7 +43,7 @@ Ankh.NoLoad
 *.com
 *.class
 *.dll
-*.o
+# *.o
 *.so
 
 # Packages #
