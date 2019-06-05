@@ -91,12 +91,31 @@ using namespace std;
 void cyclic_check() {  
 	graph g = new Graph(5);     
 
-	cout << "your code here \n";
+	//cout << "your code here \n";
+	addEdge(g,0,1);
+	addEdge(g,0,3);
+	addEdge(g,1,2);
+	addEdge(g,2,3);
+	addEdge(g,3,4);
+
+	queue<int> q;
+	DFS(g,0,q);
+	BFS(g,0);
 
 	// invoke print_adjlist()
+	print_adjlist(g);
 
 	// invoke cyclic() and print the result as shown in main()
-
+	stack<int> cy;
+	cout << "\tCycle: ";
+			if (cyclic(g, cy)) {
+				while (!cy.empty()) {
+					cout << cy.top() << " ";
+					cy.pop();   
+				}
+			}
+	print_DFS(g);
+	print_BFS(g);
 
 	// clear graph
 	clear(g);
@@ -276,7 +295,8 @@ int main(int argc, const char **argv) {
 				break;
 			}
 
-			cout << "your code here \n";
+			//cout << "your code here \n";
+
 
 
 			break;
