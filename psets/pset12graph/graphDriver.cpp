@@ -128,10 +128,12 @@ void DFSbigraph(graph g, int v) {	// DFS
 	g->marked[v] = true;			// v is visited now
 
 	for (gnode w = g->adj[v].next; w; w = w->next) {// runs for [v]'s vertices
-												    // if the vertex is not visited
-													// flip the color !g->color[v]
+		int i = w->item;
+		if(g->marked[i] == false){						// if the vertex is not visited
+			g->color[i] = !g->color[v];					// flip the color !g->color[v]
 		DPRINT(cout << "  set vertex=" << w->item << " color=" << !g->color[v] << endl;);
-													// recur DFSbigraph() at the vertex
+		DFSbigraph(g,i);	
+		}											// recur DFSbigraph() at the vertex
 	}
 }
 
@@ -148,8 +150,14 @@ bool bigraph_check(graph g) {         // graph5~9.txt are bigraphs.
 	DFSbigraph(g, 0);		// DFS starting at v=0
 
 	// check the validity of two-coloring which is saved in g->color[].
-	cout << "your code here \n";
+	// cout << "your code here \n";
+	for(int v=0 ; v < g->V ; v++){
+		for (gnode w = g->adj[v].next; w; w = w->next){
+			if(g->color[v]==g->color[w->item]) return false;
+		}
+	}
 
+	
 	DPRINT(cout << "<bigraph_check true\n";);
 	return true;
 }
@@ -296,8 +304,21 @@ int main(int argc, const char **argv) {
 			}
 
 			//cout << "your code here \n";
+			DFSpath(g,v,w,path);
+			cout << "\tDFS Path["<<v<<".."<<"]: ";
+			while (!path.empty()) {
+				cout << path.top() << " ";
+				path.pop();   
+			}
+			cout << endl;
 
-
+			cout << "\tBFS Path["<<v<<".."<<"]: ";
+			BFSpath(g,v,w,path);
+			while (!path.empty()) {
+				cout << path.top() << " ";
+				path.pop();   
+			}
+			cout << endl;
 
 			break;
 
